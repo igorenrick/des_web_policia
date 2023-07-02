@@ -31,12 +31,19 @@ export const socketMixin = {
       message.direction = message.sender !== 'batalhao' ? 'incoming' : 'outgoing';
       window.chatMessages[message.sender].push(message);
     });
+    this.socket.on("location_update", (update) => {
+      const patrolCarIndex = window.patrolCars.findIndex((car) => car.id === update.id);
+      if (patrolCarIndex !== -1) {
+        window.patrolCars[patrolCarIndex].location = update.location;
+      }
+    });
   },
   beforeUnmount() {
     this.socket.off("new_batalhao");
     this.socket.off("new_viatura");
     this.socket.off("viatura_disconnected");
     this.socket.off("receive_message");
+    this.socket.off("location_update");
   }
   
 }

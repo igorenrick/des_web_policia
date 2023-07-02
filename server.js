@@ -51,14 +51,14 @@ io.on('connection', (socket) => {
 
 
     socket.on('location_update', (location) => {
-        console.log('Location update from user:', location);
+        console.log('Location update from user:', socket.id, location);
+        io.emit('location_update', { id: socket.id, location });
     });
 
     socket.on('disconnect', () => {
         console.log('Um usuário se desconectou:', socket.id);
         socket.leave(socket.id);
 
-        // Emita o ID do socket para todos os clientes conectados
         io.emit('viatura_disconnected', socket.id);
     });
 });
