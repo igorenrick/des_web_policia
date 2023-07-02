@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "dev": "concurrently \"npm run serve --prefix ./policia-app\" \"npm run serve --prefix ./batalhao-app\" \"npm start\""
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,13 @@
   },
   "homepage": "https://github.com/igorenrick/des_web_policia#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "socket.io": "^4.7.1"
+    "socket.io": "^4.7.1",
+    "vue-3-socket.io": "^1.0.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "nodemon": "^2.0.22"
   }
 }

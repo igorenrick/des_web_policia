@@ -12,6 +12,6 @@ module.exports = defineConfig({
     }
   },
   devServer: {
-    port: 8080,
+    port: 8081,
   },
 })

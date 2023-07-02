@@ -3,16 +3,12 @@ import App from './App.vue';
 import router from './router';
 import { io } from 'socket.io-client';
 
-let socket;
-
+const socket = io(`http://localhost:3000/`);
 const app = createApp(App);
 
-app.config.globalProperties.$connectSocket = () => {
-  socket = io(`http://localhost:3000/`);
-  app.config.globalProperties.$socket = socket;
-};
+window.patrolCars = [];
+window.chatMessages = {};
 
-
+app.provide('socket', socket);
 app.use(router);
-
 app.mount('#app');
