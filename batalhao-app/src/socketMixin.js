@@ -16,12 +16,19 @@ export const socketMixin = {
       console.error('Socket is null');
     }
     this.socket.on("new_viatura", (id) => {
-      window.patrolCars.push({ id: id, status: "Online" });
+      const newPatrolCar = { id: id, status: "Online" };
+      window.patrolCars.push(newPatrolCar);
+      if (this.addMarker && newPatrolCar.location) {
+        this.addMarker(newPatrolCar);
+      }
     });
     this.socket.on("viatura_disconnected", (id) => {
       const patrolCarIndex = window.patrolCars.findIndex((car) => car.id === id);
       if (patrolCarIndex !== -1) {
         window.patrolCars.splice(patrolCarIndex, 1);
+        if (this.removeMarker) {
+          this.removeMarker(id);
+        }
       }
     });
     this.socket.on("receive_message", (message) => {
@@ -45,5 +52,5 @@ export const socketMixin = {
     this.socket.off("receive_message");
     this.socket.off("location_update");
   }
-  
+
 }

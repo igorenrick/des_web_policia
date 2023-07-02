@@ -27,7 +27,7 @@ export default {
     };
   },
   mounted() {
-    this.locationUpdateInterval = setInterval(this.sendLocation, 10000);
+    this.locationUpdateInterval = setInterval(this.sendLocation, 2000);
 
     this.$connectSocket('viatura');
 

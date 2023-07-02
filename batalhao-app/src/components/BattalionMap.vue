@@ -1,17 +1,12 @@
 <template>
-  <div class="patrol-list">
-    <h1 class="title">Viaturas</h1>
-    <ul>
-      <li v-for="(patrolCar, index) in patrolCars" :key="index">
-        Viatura {{ patrolCar.id }} ({{ patrolCar.status }})
-        <button @click="selectPatrolCar(patrolCar)">Selecionar</button>
-      </li>
-    </ul>
-  </div>
+  <div id="mapid" style="height: 100vh;"></div>
 </template>
   
 <script>
 import { socketMixin } from '../socketMixin';
+import L from 'leaflet';
+import viaturaIcon from '../assets/police-car.png';
+
 
 export default {
   mixins: [socketMixin],
@@ -19,15 +14,85 @@ export default {
     return {
       patrolCars: window.patrolCars || [],
       batalhaoId: null,
+      map: null,
+      markers: {},
     };
   },
   methods: {
+    addMarker(patrolCar) {
+      const icon = L.icon({
+        iconUrl: viaturaIcon,
+        iconSize: [38, 38],
+        iconAnchor: [19, 19],
+        popupAnchor: [0, -19],
+      });
+
+      this.markers[patrolCar.id] = L.marker([patrolCar.location.latitude, patrolCar.location.longitude], { icon })
+        .bindPopup(`ID da Viatura: ${patrolCar.id}`)
+        .addTo(this.map).openPopup();
+      this.markers[patrolCar.id].on('click', () => this.selectPatrolCar(patrolCar));
+    },
+
+    updateMarker(patrolCar) {
+      if (this.markers[patrolCar.id]) {
+        this.markers[patrolCar.id].setLatLng([patrolCar.location.latitude, patrolCar.location.longitude]);
+      } else {
+        this.addMarker(patrolCar);
+      }
+    },
+    removeMarker(id) {
+      if (this.markers[id]) {
+        this.map.removeLayer(this.markers[id]);
+        delete this.markers[id];
+      }
+    },
     selectPatrolCar(patrolCar) {
       this.$router.push({ name: 'BattalionChat', params: { patrolCarId: patrolCar.id } });
     },
   },
   mounted() {
     window.patrolCars = this.patrolCars;
+
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+
+      this.$nextTick(() => {
+        this.map = L.map('mapid', {
+          center: [latitude, longitude],
+          zoom: 13,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+        }).addTo(this.map);
+
+        this.patrolCars.forEach(patrolCar => {
+          if (patrolCar.location) {
+            this.addMarker(patrolCar);
+          }
+        });
+      });
+    }, (error) => {
+      console.error('Error getting location', error);
+      this.$nextTick(() => {
+        this.map = L.map('mapid', {
+          center: [0, 0],
+          zoom: 13,
+        });
+      });
+    });
+  },
+  watch: {
+    patrolCars: {
+      handler(newPatrolCars, oldPatrolCars) {
+        newPatrolCars.forEach(newPatrolCar => {
+          if (newPatrolCar.location && (!this.markers[newPatrolCar.id] || newPatrolCar.location !== oldPatrolCars.find(oldPatrolCar => oldPatrolCar.id === newPatrolCar.id)?.location)) {
+            this.updateMarker(newPatrolCar);
+          }
+        });
+      },
+      deep: true,
+    },
   },
 };
 </script>
