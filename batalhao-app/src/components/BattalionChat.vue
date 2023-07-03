@@ -8,7 +8,7 @@
             <ul class="chat">
                 <li v-for="(message, index) in getMessagesForPatrolCar($route.params.patrolCarId)" :key="index"
                     :class="{ 'outgoing': message.direction === 'outgoing', 'incoming': message.direction === 'incoming' }">
-                    <p class="sender">{{ message.sender === 'batalhao' ? 'Batalhão' : patrolCarNames[message.sender] }}</p>
+                    <p class="sender">{{ message.sender === 'batalhao' ? 'Batalhão' : 'Policial' }}</p>
                     <p class="message">{{ message.text }}</p>
                 </li>
 
