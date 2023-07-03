@@ -22,6 +22,15 @@ export const socketMixin = {
         this.addMarker(newPatrolCar);
       }
     });
+    this.socket.on('patrol_car_name_update', ({ id, name }) => {
+      const patrolCar = window.patrolCars.find(car => car.id === id);
+      if (patrolCar) {
+        patrolCar.name = name;
+        if (this.updateMarker) {
+          this.updateMarker(patrolCar);
+        }
+      }
+    });
     this.socket.on("viatura_disconnected", (id) => {
       const patrolCarIndex = window.patrolCars.findIndex((car) => car.id === id);
       if (patrolCarIndex !== -1) {

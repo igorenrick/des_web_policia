@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     addMarker(patrolCar) {
-      if (this.map === null) {
+      if (this.map === null || !patrolCar.location || this.map._animatingZoom === true) {
         return;
       }
 
@@ -32,12 +32,12 @@ export default {
       });
 
       this.markers[patrolCar.id] = L.marker([patrolCar.location.latitude, patrolCar.location.longitude], { icon })
-        .bindPopup(`ID da Viatura: ${patrolCar.id}`)
+        .bindPopup(`${patrolCar.name || patrolCar.id}`)
         .addTo(this.map).openPopup();
       this.markers[patrolCar.id].on('click', () => this.selectPatrolCar(patrolCar));
     },
     updateMarker(patrolCar) {
-      if (this.map === null) {
+      if (this.map === null || !patrolCar.location || this.map._animatingZoom === true) {
         return;
       }
 
@@ -72,6 +72,7 @@ export default {
         this.map = L.map('mapid', {
           center: [latitude, longitude],
           zoom: 13,
+          zoomAnimation: false,
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

@@ -25,6 +25,7 @@ server.listen(3000, () => {
 });
 
 let batalhaoId = null;
+let patrolCarNames = {};
 
 io.on('connection', (socket) => {
     console.log('Um usuário se conectou:', socket.id);
@@ -52,13 +53,19 @@ io.on('connection', (socket) => {
 
     socket.on('location_update', (location) => {
         console.log('Location update from user:', socket.id, location);
-        io.emit('location_update', { id: socket.id, location });
+        io.emit('location_update', { id: socket.id, name: patrolCarNames[socket.id], location });
     });
 
     socket.on('disconnect', () => {
         console.log('Um usuário se desconectou:', socket.id);
         socket.leave(socket.id);
 
+        delete patrolCarNames[socket.id];
         io.emit('viatura_disconnected', socket.id);
+    });
+
+    socket.on('set_patrol_car_name', (name) => {
+        patrolCarNames[socket.id] = name;
+        io.emit('patrol_car_name_update', { id: socket.id, name });
     });
 });

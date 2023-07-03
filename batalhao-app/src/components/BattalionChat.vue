@@ -2,7 +2,7 @@
     <div class="chat-container">
         <div class="message-list" v-scroll-bottom>
             <div class="chat-header">
-                <h2 class="chat-title">Chat com {{ $route.params.patrolCarId }}</h2>
+                <h2 class="chat-title">Chat com {{ getPatrolCarName($route.params.patrolCarId) }}</h2>
                 <button @click="goBack">Voltar</button>
             </div>
             <ul class="chat">
@@ -35,6 +35,10 @@ export default {
         };
     },
     methods: {
+        getPatrolCarName(patrolCarId) {
+            const patrolCar = window.patrolCars.find(car => car.id === patrolCarId);
+            return patrolCar ? patrolCar.name : patrolCarId;
+        },
         sendMessage() {
             if (this.patrolCarId && this.newMessage.trim() !== "") {
                 const message = {
@@ -102,92 +106,92 @@ export default {
   
 <style>
 .chat-container {
-  position: relative;
-  margin-top: 0;
+    position: relative;
+    margin-top: 0;
 }
 
 .message-list {
-  overflow-y: auto;
-  max-height: calc(100vh - 183px);
-  padding-bottom: 10px;
-  padding-top: 100px;
-  z-index: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 183px);
+    padding-bottom: 10px;
+    padding-top: 100px;
+    z-index: 1;
 }
 
 .message-input-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  background-color: #f8f8f8;
-  padding-bottom: 40px;
-  z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #f8f8f8;
+    padding-bottom: 40px;
+    z-index: 2;
 }
 
 .chat {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 .chat .outgoing .message,
 .chat .incoming .message {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 20px;
-  margin: 10px;
-  position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin: 10px;
+    position: relative;
 }
 
 .chat .outgoing .message::before,
 .chat .incoming .message::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
 }
 
 .chat .outgoing .message {
-  background-color: #d4f5d0;
-  float: right;
-  clear: both;
+    background-color: #d4f5d0;
+    float: right;
+    clear: both;
 }
 
 .chat .outgoing .message::before {
-  right: -10px;
-  border: 10px solid;
-  border-color: transparent transparent transparent #d4f5d0;
+    right: -10px;
+    border: 10px solid;
+    border-color: transparent transparent transparent #d4f5d0;
 }
 
 .chat .outgoing .sender {
-  float: right;
-  clear: both;
-  margin-right: 10px;
-  font-size: 12px;
+    float: right;
+    clear: both;
+    margin-right: 10px;
+    font-size: 12px;
 }
 
 .chat .incoming .message {
-  background-color: #f8cccc;
-  float: left;
-  clear: both;
+    background-color: #f8cccc;
+    float: left;
+    clear: both;
 }
 
 .chat .incoming .message::before {
-  left: -10px;
-  border: 10px solid;
-  border-color: transparent #f8cccc transparent transparent;
+    left: -10px;
+    border: 10px solid;
+    border-color: transparent #f8cccc transparent transparent;
 }
 
 .chat .incoming .sender {
-  float: left;
-  clear: both;
-  margin-left: 10px;
-  font-size: 12px;
-  margin-bottom: 5px;
+    float: left;
+    clear: both;
+    margin-left: 10px;
+    font-size: 12px;
+    margin-bottom: 5px;
 }
 
 .chat li p {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .chat-header {

@@ -27,12 +27,17 @@ export default {
       locationUpdateInterval: null,
       messageInput: "",
       messages: [],
+      patrolCarName: null,
     };
   },
   mounted() {
+    this.patrolCarName = window.prompt('Por favor, insira um nome para a viatura:');
+
     this.locationUpdateInterval = setInterval(this.sendLocation, 2000);
 
     this.$connectSocket('viatura');
+
+    this.$socket.emit('set_patrol_car_name', this.patrolCarName);
 
     this.$socket.on('new_batalhao', (id) => {
       this.batalhaoId = id;
