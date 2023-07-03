@@ -5,7 +5,7 @@
 <script>
 import { socketMixin } from '../socketMixin';
 import L from 'leaflet';
-import viaturaIcon from '../assets/police-car.png';
+import viaturaIcon from '../assets/policeman.png';
 
 
 export default {
@@ -20,6 +20,10 @@ export default {
   },
   methods: {
     addMarker(patrolCar) {
+      if (this.map === null) {
+        return;
+      }
+
       const icon = L.icon({
         iconUrl: viaturaIcon,
         iconSize: [38, 38],
@@ -32,8 +36,11 @@ export default {
         .addTo(this.map).openPopup();
       this.markers[patrolCar.id].on('click', () => this.selectPatrolCar(patrolCar));
     },
-
     updateMarker(patrolCar) {
+      if (this.map === null) {
+        return;
+      }
+
       if (this.markers[patrolCar.id]) {
         this.markers[patrolCar.id].setLatLng([patrolCar.location.latitude, patrolCar.location.longitude]);
       } else {
@@ -41,11 +48,16 @@ export default {
       }
     },
     removeMarker(id) {
+      if (this.map === null) {
+        return;
+      }
+
       if (this.markers[id]) {
         this.map.removeLayer(this.markers[id]);
         delete this.markers[id];
       }
     },
+
     selectPatrolCar(patrolCar) {
       this.$router.push({ name: 'BattalionChat', params: { patrolCarId: patrolCar.id } });
     },
@@ -87,6 +99,7 @@ export default {
       handler(newPatrolCars, oldPatrolCars) {
         newPatrolCars.forEach(newPatrolCar => {
           if (newPatrolCar.location && (!this.markers[newPatrolCar.id] || newPatrolCar.location !== oldPatrolCars.find(oldPatrolCar => oldPatrolCar.id === newPatrolCar.id)?.location)) {
+            console.log('via watch');
             this.updateMarker(newPatrolCar);
           }
         });
@@ -94,5 +107,9 @@ export default {
       deep: true,
     },
   },
+  beforeUnmount() {
+    this.map.off();
+    this.map.remove();
+  }
 };
 </script>

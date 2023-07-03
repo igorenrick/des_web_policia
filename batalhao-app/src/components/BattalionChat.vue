@@ -2,13 +2,13 @@
     <div class="chat-container">
         <div class="message-list" v-scroll-bottom>
             <div class="chat-header">
+                <h2 class="chat-title">Chat com {{ $route.params.patrolCarId }}</h2>
                 <button @click="goBack">Voltar</button>
-                <h2 class="chat-title">Chat com a viatura {{ $route.params.patrolCarId }}</h2>
             </div>
             <ul class="chat">
                 <li v-for="(message, index) in getMessagesForPatrolCar($route.params.patrolCarId)" :key="index"
                     :class="{ 'outgoing': message.direction === 'outgoing', 'incoming': message.direction === 'incoming' }">
-                    <p class="sender">{{ message.sender === 'batalhao' ? 'Batalhão' : 'Viatura' }}</p>
+                    <p class="sender">{{ message.sender === 'batalhao' ? 'Batalhão' : patrolCarNames[message.sender] }}</p>
                     <p class="message">{{ message.text }}</p>
                 </li>
 
@@ -30,7 +30,8 @@ export default {
         return {
             messages: window.chatMessages || {},
             patrolCarId: null,
-            newMessage: ""
+            newMessage: "",
+            patrolCarNames: {},
         };
     },
     methods: {
@@ -107,10 +108,10 @@ export default {
 
 .message-list {
   overflow-y: auto;
-  max-height: calc(100vh - 183px); /* Altura máxima da lista de mensagens */
-  padding-bottom: 10px; /* Espaçamento inferior */
-  padding-top: 40px;
-  z-index: 1; /* Z-index menor para ficar atrás do .message-input-container */
+  max-height: calc(100vh - 183px);
+  padding-bottom: 10px;
+  padding-top: 100px;
+  z-index: 1;
 }
 
 .message-input-container {
@@ -120,8 +121,8 @@ export default {
   width: 100%;
   padding: 10px;
   background-color: #f8f8f8;
-  padding-bottom: 40px; /* Espaçamento inferior igual à altura do botão de envio */
-  z-index: 2; /* Z-index maior para ficar na frente do .message-list */
+  padding-bottom: 40px;
+  z-index: 2;
 }
 
 .chat {
@@ -147,14 +148,13 @@ export default {
 }
 
 .chat .outgoing .message {
-  background-color: #d4f5d0; /* Cor de fundo mais suave para as mensagens enviadas */
+  background-color: #d4f5d0;
   float: right;
   clear: both;
 }
 
 .chat .outgoing .message::before {
   right: -10px;
-  top: 3px;
   border: 10px solid;
   border-color: transparent transparent transparent #d4f5d0;
 }
@@ -163,19 +163,17 @@ export default {
   float: right;
   clear: both;
   margin-right: 10px;
-  font-size: 12px; /* Tamanho menor para o sender */
-  margin-bottom: 5px; /* Espaçamento inferior menor para o sender */
+  font-size: 12px;
 }
 
 .chat .incoming .message {
-  background-color: #f8cccc; /* Cor de fundo mais suave para as mensagens recebidas */
+  background-color: #f8cccc;
   float: left;
   clear: both;
 }
 
 .chat .incoming .message::before {
   left: -10px;
-  top: 3px;
   border: 10px solid;
   border-color: transparent #f8cccc transparent transparent;
 }
@@ -184,8 +182,8 @@ export default {
   float: left;
   clear: both;
   margin-left: 10px;
-  font-size: 12px; /* Tamanho menor para o sender */
-  margin-bottom: 5px; /* Espaçamento inferior menor para o sender */
+  font-size: 12px;
+  margin-bottom: 5px;
 }
 
 .chat li p {
@@ -195,7 +193,9 @@ export default {
 .chat-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 10px;
     background-color: #f8f8f8;
     position: fixed;
@@ -204,9 +204,5 @@ export default {
     left: 0;
     widows: 100%;
     z-index: 3;
-}
-
-.chat-header button {
-    margin-right: 20px;
 }
 </style>

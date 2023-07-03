@@ -42,6 +42,10 @@ export const socketMixin = {
       const patrolCarIndex = window.patrolCars.findIndex((car) => car.id === update.id);
       if (patrolCarIndex !== -1) {
         window.patrolCars[patrolCarIndex].location = update.location;
+        if (this.updateMarker) {
+          console.log('via minix');
+          this.updateMarker(window.patrolCars[patrolCarIndex]);
+        }
       }
     });
   },

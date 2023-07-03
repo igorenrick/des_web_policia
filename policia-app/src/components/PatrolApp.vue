@@ -1,11 +1,14 @@
 <template>
   <div class="chat-container">
     <div class="message-list" v-scroll-bottom>
-      <h2 class="chat-title">Conversa com o Batalhão:</h2>
+      <div class="chat-header">
+        <h2 class="chat-title">Conversa com o Batalhão</h2>
+        <!--<button @click="changeName">Alterar nome</button>-->
+      </div>
       <ul class="chat">
         <li v-for="(message, index) in messages" :key="index"
           :class="{ 'outgoing': message.direction === 'outgoing', 'incoming': message.direction === 'incoming' }">
-          <p class="sender">{{ message.sender === 'batalhao' ? 'Batalhão' : 'Viatura' }}</p>
+          <p class="sender">{{ message.direction === 'incoming' ? 'Batalhão' : 'Viatura' }}</p>
           <p class="message">{{ message.text }}</p>
         </li>
       </ul>
@@ -96,20 +99,12 @@ export default {
   margin-top: 0;
 }
 
-.chat-title {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #f8f8f8;
-  padding: 10px;
-  margin-bottom: 0;
-}
-
 .message-list {
   overflow-y: auto;
-  max-height: calc(100vh - 143px); /* Altura máxima da lista de mensagens */
-  padding-bottom: 10px; /* Espaçamento inferior */
-  z-index: 1; /* Z-index menor para ficar atrás do .message-input-container */
+  max-height: calc(100vh - 183px);
+  padding-bottom: 10px;
+  padding-top: 100px;
+  z-index: 1;
 }
 
 .message-input-container {
@@ -119,8 +114,8 @@ export default {
   width: 100%;
   padding: 10px;
   background-color: #f8f8f8;
-  padding-bottom: 40px; /* Espaçamento inferior igual à altura do botão de envio */
-  z-index: 2; /* Z-index maior para ficar na frente do .message-list */
+  padding-bottom: 40px;
+  z-index: 2;
 }
 
 .chat {
@@ -146,14 +141,13 @@ export default {
 }
 
 .chat .outgoing .message {
-  background-color: #d4f5d0; /* Cor de fundo mais suave para as mensagens enviadas */
+  background-color: #d4f5d0;
   float: right;
   clear: both;
 }
 
 .chat .outgoing .message::before {
   right: -10px;
-  top: 3px;
   border: 10px solid;
   border-color: transparent transparent transparent #d4f5d0;
 }
@@ -162,19 +156,17 @@ export default {
   float: right;
   clear: both;
   margin-right: 10px;
-  font-size: 12px; /* Tamanho menor para o sender */
-  margin-bottom: 5px; /* Espaçamento inferior menor para o sender */
+  font-size: 12px;
 }
 
 .chat .incoming .message {
-  background-color: #f8cccc; /* Cor de fundo mais suave para as mensagens recebidas */
+  background-color: #f8cccc;
   float: left;
   clear: both;
 }
 
 .chat .incoming .message::before {
   left: -10px;
-  top: 3px;
   border: 10px solid;
   border-color: transparent #f8cccc transparent transparent;
 }
@@ -183,11 +175,27 @@ export default {
   float: left;
   clear: both;
   margin-left: 10px;
-  font-size: 12px; /* Tamanho menor para o sender */
-  margin-bottom: 5px; /* Espaçamento inferior menor para o sender */
+  font-size: 12px;
+  margin-bottom: 5px;
 }
 
 .chat li p {
   margin-bottom: 0;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f8f8f8;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    widows: 100%;
+    z-index: 3;
 }
 </style>

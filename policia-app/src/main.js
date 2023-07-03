@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { io } from 'socket.io-client';
+import './registerServiceWorker'
 
 let socket;
 
@@ -12,7 +13,10 @@ app.config.globalProperties.$connectSocket = () => {
   app.config.globalProperties.$socket = socket;
 };
 
-
 app.use(router);
 
 app.mount('#app');
+
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  router.push('/chat');
+}
